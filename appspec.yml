@@ -1,13 +1,17 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /tmp/elb-test
+  - source: /index.html
+    destination: /var/www/html/
 hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies
+      timeout: 300
+      runas: root
+    - location: scripts/start_server
+      timeout: 300
+      runas: root
   ApplicationStop:
-    - location: deregister_from_elb.sh
-    - location: stop_httpd.sh
-  ApplicationStart:
-    - location: start_httpd.sh
-    - location: register_with_elb.sh
-
+    - location: scripts/stop_server
+      timeout: 300
+      runas: root
